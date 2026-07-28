@@ -828,6 +828,20 @@
           <button type="submit" class="btn btn-primary" id="authSubmitBtn">ورود</button>
           <button type="button" class="btn btn-secondary" id="authRegisterBtn">حساب جدید</button>
         </div>
+        <div style="text-align:center; margin-top:16px;">
+          <button type="button" id="forgotPinBtn" style="background:none; border:none; color:var(--primary-dark); font-size:0.75rem; font-weight:800; cursor:pointer; text-decoration:underline;">رمز عبور را فراموش کردم؟</button>
+        </div>
+      </form>
+
+      <form id="recoveryForm" style="display:none; margin-top:15px; border-top:1px solid rgba(15,23,42,0.1); padding-top:15px;">
+        <div class="sub" style="text-align:center; margin-bottom:10px; color:var(--accent-dark);">بازیابی رمز عبور</div>
+        <div class="form-group"><label>نام کارشناس</label><input class="input" id="recName" required placeholder="نام دقیق خود را وارد کنید" /></div>
+        <div class="form-group"><label>کد بازیابی ۱۲ رقمی</label><input class="input" id="recKey" required placeholder="XXX-XXX-XXX" dir="ltr" style="text-transform:uppercase; letter-spacing:1px;" /></div>
+        <div class="form-group"><label>رمز ۴ رقمی جدید</label><input class="input" id="recNewPin" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" required placeholder="••••" dir="ltr" /></div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">ثبت رمز جدید</button>
+          <button type="button" class="btn btn-secondary" id="recoveryCancelBtn">لغو</button>
+        </div>
       </form>
     </div>
   </div>
@@ -1032,6 +1046,17 @@
         <button class="btn btn-glass-save" type="button" id="addCheckSave">افزودن</button>
         <button class="btn btn-secondary" type="button" id="addCheckCancel">لغو</button>
       </div>
+    </div>
+  </div>
+
+  <div class="modal-bg modal-center" id="recoveryKeyModal" style="z-index: 300;">
+    <div class="modal" style="text-align:center;">
+      <div class="h2" style="color:#0f766e;">حساب با موفقیت ساخته شد!</div>
+      <div class="warn" style="font-size:0.75rem; line-height:1.6; text-align:right; margin:15px 0;">
+        ⚠️ <strong>بسیار مهم:</strong> لطفاً کد بازیابی زیر را در جای امنی یادداشت کنید. در صورتی که رمز عبور (پین ۴ رقمی) خود را فراموش کنید، <strong>تنها راه</strong> ورود به حسابتان این کد است.
+      </div>
+      <div id="newRecoveryKeyDisplay" style="font-size:1.4rem; font-weight:900; letter-spacing:3px; color:var(--ink); background:rgba(15,23,42,0.05); padding:15px; border-radius:12px; margin-bottom:15px; direction:ltr; user-select:all;"></div>
+      <button class="btn btn-primary" type="button" id="closeRecoveryKeyModal" style="width:100%">کد را یادداشت کردم، ورود به برنامه</button>
     </div>
   </div>
 
@@ -2076,6 +2101,8 @@
       state.authOverlay = true;
       $('#authName').value = '';
       $('#authPin').value = '';
+      $('#authForm').style.display = 'block';
+      $('#recoveryForm').style.display = 'none';
       renderAuth();
       $('#authScreen').classList.remove('hidden');
       $('#authScreen').classList.add('overlay-mode');
@@ -2091,13 +2118,36 @@
       $('#topAvatar').style.cssText = avatarStyle(u);
       $('#topAvatarLetter').textContent = avatarLetter(u.name);
     }
+    function generateRecoveryKey() {
+      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let key = '';
+      for (let i = 0; i < 9; i++) key += chars.charAt(Math.floor(Math.random() * chars.length));
+      return key.slice(0,3) + '-' + key.slice(3,6) + '-' + key.slice(6,9);
+    }
+
     async function registerUser(name, pin) {
       if (state.users.length >= MAX_USERS) { alert('حداکثر '+MAX_USERS+' حساب مجاز است'); return null; }
       const cleanName = sanitizeName(name);
       const cleanPin = sanitizePin(pin);
       if (!cleanName || cleanPin.length !== 4) { alert('نام یا رمز نامعتبر است'); return null; }
-      const u = { id: uid(), name: cleanName, pinHash: await hashPin(cleanPin), createdAt: Date.now() };
-      await put('users', u); await loadAll(); return u;
+      
+      const rawRecoveryKey = generateRecoveryKey();
+      const recHash = await hashPin(rawRecoveryKey);
+
+      const u = { 
+        id: uid(), 
+        name: cleanName, 
+        pinHash: await hashPin(cleanPin), 
+        recoveryHash: recHash,
+        createdAt: Date.now() 
+      };
+      await put('users', u); 
+      await loadAll(); 
+      
+      $('#newRecoveryKeyDisplay').textContent = rawRecoveryKey;
+      $('#recoveryKeyModal').classList.add('open');
+      
+      return u;
     }
     async function loginUser(user, pin) {
       const h = await hashPin(sanitizePin(pin));
@@ -3223,6 +3273,30 @@
         await loginUser(u,pin);
         return;
       }
+      if (e.target.id==='recoveryForm') {
+        e.preventDefault();
+        const name = sanitizeName($('#recName').value);
+        const recKey = ($('#recKey').value || '').trim().toUpperCase();
+        const newPin = sanitizePin($('#recNewPin').value);
+        if (!name || !recKey || newPin.length !== 4) { alert('اطلاعات نامعتبر است'); return; }
+        
+        let u = state.users.find(x => x.name === name);
+        if (!u) { alert('کاربری با این نام یافت نشد'); return; }
+        if (!u.recoveryHash) { alert('این حساب کد بازیابی ندارد (حساب قدیمی است)'); return; }
+        
+        const testHash = await hashPin(recKey);
+        if (u.recoveryHash !== testHash) { alert('کد بازیابی وارد شده اشتباه است'); return; }
+        
+        u.pinHash = await hashPin(newPin);
+        await put('users', u);
+        await loadAll();
+        alert('رمز عبور با موفقیت تغییر کرد. حالا وارد شوید.');
+        $('#recoveryForm').style.display = 'none';
+        $('#authForm').style.display = 'block';
+        $('#authName').value = name;
+        $('#authPin').value = newPin;
+        return;
+      }
       if (e.target.id!=='newCaseForm') return; e.preventDefault();
       const fd=new FormData(e.target);
       const c=await createCase({
@@ -3247,6 +3321,22 @@
       const u=await registerUser(name,pin);
       if(u) await loginUser(u,pin);
     });
+    
+    $('#forgotPinBtn').addEventListener('click', () => {
+      $('#authForm').style.display = 'none';
+      $('#recoveryForm').style.display = 'block';
+      $('#recName').value = $('#authName').value;
+    });
+    
+    $('#recoveryCancelBtn').addEventListener('click', () => {
+      $('#recoveryForm').style.display = 'none';
+      $('#authForm').style.display = 'block';
+    });
+    
+    $('#closeRecoveryKeyModal').addEventListener('click', () => {
+      $('#recoveryKeyModal').classList.remove('open');
+    });
+
     $('#reportModal').addEventListener('click', e => { if (e.target.id==='reportModal') closeReport(); });
     $('#helpModal').addEventListener('click', e => { if (e.target.id==='helpModal') closeHelpModal(); });
     $('#jcalBg').addEventListener('click', e => { if (e.target.id==='jcalBg') closeJcal(); });
