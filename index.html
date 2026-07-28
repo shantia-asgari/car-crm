@@ -1680,25 +1680,27 @@
     }
 
     function openSmartLink(url, appName) {
-      if (!url || url === '#') {
+      // اگر لینک خالی بود یا معتبر نبود، سایت اصلی باز شود
+      if (!url || url === '#' || url.trim() === '') {
         url = appName === 'divar' ? 'https://divar.ir' : 'https://karnameh.com';
       }
       const ua = navigator.userAgent || '';
       const isAndroid = /Android/i.test(ua);
       
-      if (isAndroid) {
+      if (isAndroid && url.startsWith('http')) {
         try {
           const u = new URL(url);
           let pkg = '';
           if (appName === 'divar') pkg = 'ir.divar';
-          // استفاده از Intent در اندروید برای باز کردن اجباری اپلیکیشن بومی
+          
+          // استفاده از Intent در اندروید برای باز کردن اجباری اپلیکیشن بومی دیوار
           if (pkg) {
             location.href = `intent://${u.host}${u.pathname}${u.search}#Intent;scheme=https;package=${pkg};S.browser_fallback_url=${encodeURIComponent(url)};end`;
             return;
           }
         } catch(e) {}
       }
-      // جایگزین (Fallback) برای آیفون، دسکتاپ یا در صورت عدم نصب برنامه
+      // در iOS یا کامپیوتر یا در صورت عدم نصب، وب‌سایت باز می‌شود
       window.open(url, '_blank', 'noopener');
     }
     
@@ -2909,12 +2911,6 @@
       if (detailBtn) { go('detail', detailBtn.dataset.caseOpen); return true; }
       const callBtn = e.target.closest('[data-call-action]');
       if (callBtn) { callBtn.blur(); openCallAction(callBtn.dataset.callAction); return true; }
-      const smartLinkBtn = e.target.closest('[data-smart-link]');
-      if (smartLinkBtn && !smartLinkBtn.classList.contains('disabled')) {
-        smartLinkBtn.blur();
-        openSmartLink(smartLinkBtn.dataset.smartLink, smartLinkBtn.dataset.appName);
-        return true;
-      }
       const notesBtn = e.target.closest('[data-scroll-notes]');
       if (notesBtn) {
         setTimeout(() => { $('#caseNotesSection')?.scrollIntoView({ behavior:'smooth', block:'start' }); $('#noteInput')?.focus(); }, 100);
@@ -2925,6 +2921,12 @@
     }
 
     document.addEventListener('click', async e => {
+      const smartLinkBtn = e.target.closest('[data-smart-link]');
+      if (smartLinkBtn) {
+        smartLinkBtn.blur();
+        openSmartLink(smartLinkBtn.dataset.smartLink, smartLinkBtn.dataset.appName);
+        return;
+      }
       if (e.target.closest('[data-nav]')) { go(e.target.closest('[data-nav]').dataset.nav); return; }
       if (e.target.closest('#fabAdd')) { go('new'); return; }
       if (e.target.closest('[data-go]')) { go(e.target.closest('[data-go]').dataset.go); return; }
