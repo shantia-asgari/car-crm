@@ -45,7 +45,8 @@
 
     * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
     html { -webkit-text-size-adjust: 100%; }
-    html, body { height: 100%; }
+    /* با دادن رنگ به html، پرش‌های سفید در زمان ورود مجدد به برنامه کاملاً از بین می‌رود */
+    html, body { height: 100%; background-color: #e8eef5; }
     body {
       -webkit-user-select: none; user-select: none;
       /* در خط زیر فونت جدید شما به اولویت اول اضافه شد */
@@ -2164,7 +2165,10 @@
       $('#authScreen').classList.add('hidden');
       $('#authScreen').classList.remove('overlay-mode');
       $('#appShell').classList.remove('hidden');
-      updateTopUser(); await seed(); go('home'); return true;
+      updateTopUser(); 
+      /* اجرای خودکار داده نمونه (await seed) حذف شد تا فضای کاری خالی بماند */
+      go('home'); 
+      return true;
     }
     async function logoutUser() {
       state.authOverlay = false;
@@ -3505,7 +3509,8 @@
       renderAuth();
       const sid=localStorage.getItem(SESSION_KEY);
       const u=sid?state.users.find(x=>x.id===sid):null;
-      if(u){ state.currentUser=u; showApp(true); updateTopUser(); await seed(); go('home'); }
+      /* اجرای خودکار داده نمونه (await seed) در زمان لود اولیه هم حذف شد */
+      if(u){ state.currentUser=u; showApp(true); updateTopUser(); go('home'); }
       else showApp(false);
     })();
   })();
