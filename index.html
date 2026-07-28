@@ -756,7 +756,7 @@
     .link-open {
       flex: 1; min-width: 120px; padding: 9px 10px; border-radius: 11px;
       font-size: 0.7rem; font-weight: 800; text-align: center; text-decoration: none;
-      border: 1px solid rgba(15,23,42,0.08);
+      border: 1px solid rgba(15,23,42,0.08); cursor: pointer; font-family: inherit;
     }
     .link-open.karname { background: rgba(13,148,136,0.18); color: #065f46; border-color: rgba(13,148,136,0.28); }
     .link-open.divar { background: rgba(249,115,22,0.16); color: #9a3412; border-color: rgba(249,115,22,0.28); }
@@ -840,7 +840,12 @@
           <p id="topKicker" class="brand-en">Karnameh CRM</p>
           <h1 id="topTitle">خانه</h1>
         </div>
-        <div class="topbar-avatar" id="topAvatar" title="پروفایل"><span id="topAvatarLetter">ک</span></div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button type="button" id="helpBtn" title="راهنمای استفاده" style="width:38px; height:38px; border-radius:12px; background:rgba(255,255,255,0.4); border:1px solid rgba(255,255,255,0.6); color:var(--primary-dark); display:grid; place-items:center; cursor:pointer; box-shadow:inset 0 1px 0 rgba(255,255,255,0.5);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          </button>
+          <div class="topbar-avatar" id="topAvatar" title="پروفایل"><span id="topAvatarLetter">ک</span></div>
+        </div>
       </div>
     </header>
 
@@ -958,6 +963,37 @@
       <div class="btn-row">
         <button class="btn btn-glass-save" type="button" id="editFieldSave">ذخیره</button>
         <button class="btn btn-secondary" type="button" id="editFieldCancel">لغو</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-bg modal-center" id="helpModal">
+    <div class="modal" style="max-height:85vh; padding-bottom:calc(20px + var(--safe-b));">
+      <div class="modal-handle"></div>
+      <div class="h2" style="color:var(--primary-dark); display:flex; align-items:center; gap:6px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        راهنمای استفاده از CRM
+      </div>
+      <div class="sub" style="margin-bottom:14px">توضیحات و عملکرد بخش‌های مختلف سیستم</div>
+      
+      <div style="font-size:0.75rem; line-height:1.75; color:var(--ink); overflow-y:auto; padding-right:4px;">
+        <p style="margin-bottom:10px;"><strong>🏠 خانه (Home):</strong> داشبورد اصلی شماست. نمایش آمار فروش، پورسانت‌ها (آفلاین محاسبه می‌شود)، و اولویت‌های امروز که باید سریعاً پیگیری شوند.</p>
+        
+        <p style="margin-bottom:10px;"><strong>📁 پرونده‌ها:</strong> تمام پرونده‌های مشتریان اینجا قرار دارد. با استفاده از دکمه «فیلتر پیشرفته» یا دکمه‌های بیضی شکل بالا، می‌توانید پرونده‌ها را بر اساس مرحله، اولویت یا وضعیت کارشناسی دسته‌بندی کنید.</p>
+        
+        <p style="margin-bottom:10px;"><strong>➕ ثبت پرونده (دکمه وسط):</strong> برای تعریف پرونده جدید استفاده می‌شود. مشخصات مالک، قیمت‌ها و لینک آگهی‌ها را وارد کنید تا پرونده جدید در جریان قرار گیرد.</p>
+        
+        <p style="margin-bottom:10px;"><strong>🔔 اعلان‌ها (Alerts):</strong> هشدارها کاملاً خودکار بر اساس ۳ حالت ظاهر می‌شوند:<br>
+        ۱. پرونده روی اولویت «فوری» تنظیم شده باشد.<br>
+        ۲. تاریخ پیگیری (Follow-up) پرونده فرارسیده یا گذشته باشد.<br>
+        ۳. پرونده بیش از ۳ روز بدون هیچ فعالیت/تغییر وضعیتی رها شده باشد.</p>
+        
+        <p style="margin-bottom:10px;"><strong>⚙️ بیشتر (More):</strong> شامل دانلود گزارشات خلاصه (تعداد فروش) و گزارش کامل (تمام فیلدها) به صورت فایل اکسل، پشتیبان‌گیری از دیتابیس، ماشین‌حساب سریع و راهنمای نصب آفلاین است.</p>
+        
+        <p style="margin-bottom:10px;"><strong>👤 پروفایل (عکس بالای صفحه):</strong> امکان مشاهده آمار اختصاصی کارشناس فعلی، تغییر حساب کاربری و پاکسازی اطلاعات این دستگاه را فراهم می‌کند.</p>
+      </div>
+      
+      <div class="btn-row" style="margin-top:16px;">
+        <button class="btn btn-secondary" type="button" id="closeHelpModal" style="width:100%">متوجه شدم</button>
       </div>
     </div>
   </div>
@@ -1639,6 +1675,30 @@
       el.textContent=n?fa(n):'';
       el.style.display=n?'grid':'none';
     }
+
+    function openSmartLink(url, appName) {
+      if (!url || url === '#') return;
+      const ua = navigator.userAgent || '';
+      const isAndroid = /Android/i.test(ua);
+      
+      if (isAndroid) {
+        try {
+          const u = new URL(url);
+          let pkg = '';
+          if (appName === 'divar') pkg = 'ir.divar';
+          // استفاده از Intent در اندروید برای باز کردن اجباری اپلیکیشن بومی
+          if (pkg) {
+            location.href = `intent://${u.host}${u.pathname}${u.search}#Intent;scheme=https;package=${pkg};S.browser_fallback_url=${encodeURIComponent(url)};end`;
+            return;
+          }
+        } catch(e) {}
+      }
+      // جایگزین (Fallback) برای آیفون، دسکتاپ یا در صورت عدم نصب برنامه
+      window.open(url, '_blank', 'noopener');
+    }
+    
+    function openHelpModal() { $('#helpModal').classList.add('open'); }
+    function closeHelpModal() { $('#helpModal').classList.remove('open'); }
 
     function balePhone(phone){
       const p=String(phone||'').replace(/\D/g,'').replace(/^0/,'');
@@ -2552,8 +2612,8 @@
             <input class="input" data-link-field="divarUrl" dir="ltr" placeholder="https://divar.ir/v/..." value="${esc(c.divarUrl||'')}" />
           </div>
           <div class="link-open-row">
-            <a class="link-open karname ${c.karnameUrl?'':'disabled'}" href="${esc(c.karnameUrl||'#')}" target="_blank" rel="noopener noreferrer">باز کردن کارنامه</a>
-            <a class="link-open divar ${c.divarUrl?'':'disabled'}" href="${esc(c.divarUrl||'#')}" target="_blank" rel="noopener noreferrer">باز کردن دیوار</a>
+            <button type="button" class="link-open karname ${c.karnameUrl?'':'disabled'}" data-smart-link="${esc(c.karnameUrl||'')}" data-app-name="karname">باز کردن کارنامه</button>
+            <button type="button" class="link-open divar ${c.divarUrl?'':'disabled'}" data-smart-link="${esc(c.divarUrl||'')}" data-app-name="divar">باز کردن دیوار</button>
           </div>
         </div>
         <div class="panel">
@@ -2844,6 +2904,12 @@
       if (detailBtn) { go('detail', detailBtn.dataset.caseOpen); return true; }
       const callBtn = e.target.closest('[data-call-action]');
       if (callBtn) { callBtn.blur(); openCallAction(callBtn.dataset.callAction); return true; }
+      const smartLinkBtn = e.target.closest('[data-smart-link]');
+      if (smartLinkBtn && !smartLinkBtn.classList.contains('disabled')) {
+        smartLinkBtn.blur();
+        openSmartLink(smartLinkBtn.dataset.smartLink, smartLinkBtn.dataset.appName);
+        return true;
+      }
       const notesBtn = e.target.closest('[data-scroll-notes]');
       if (notesBtn) {
         setTimeout(() => { $('#caseNotesSection')?.scrollIntoView({ behavior:'smooth', block:'start' }); $('#noteInput')?.focus(); }, 100);
@@ -2865,6 +2931,8 @@
         return;
       }
       if (e.target.closest('#closeReportModal')) { closeReport(); return; }
+      if (e.target.closest('#helpBtn')) { openHelpModal(); return; }
+      if (e.target.closest('#closeHelpModal')) { closeHelpModal(); return; }
       if (e.target.closest('#callActionCancel') || e.target.closest('#callActionDial')) { closeCallAction(); return; }
       if (e.target.closest('#callActionCopy')) {
         const p = $('#callActionPhone').textContent;
@@ -3171,6 +3239,7 @@
       if(u) await loginUser(u,pin);
     });
     $('#reportModal').addEventListener('click', e => { if (e.target.id==='reportModal') closeReport(); });
+    $('#helpModal').addEventListener('click', e => { if (e.target.id==='helpModal') closeHelpModal(); });
     $('#jcalBg').addEventListener('click', e => { if (e.target.id==='jcalBg') closeJcal(); });
     $('#fieldNoteModal').addEventListener('click', e => { if (e.target.id==='fieldNoteModal') closeFieldNoteModal(); });
     $('#caseNoteModal').addEventListener('click', e => { if (e.target.id==='caseNoteModal') closeCaseNoteModal(); });
