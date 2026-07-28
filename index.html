@@ -976,18 +976,20 @@
       <div class="sub" style="margin-bottom:14px">توضیحات و عملکرد بخش‌های مختلف سیستم</div>
       
       <div style="font-size:0.75rem; line-height:1.75; color:var(--ink); overflow-y:auto; padding-right:4px;">
-        <p style="margin-bottom:10px;"><strong>🏠 خانه (Home):</strong> داشبورد اصلی شماست. نمایش آمار فروش، پورسانت‌ها (آفلاین محاسبه می‌شود)، و اولویت‌های امروز که باید سریعاً پیگیری شوند.</p>
+        <p style="margin-bottom:10px;"><strong>🏠 خانه:</strong> داشبورد اصلی شماست. نمایش آمار فروش، پورسانت‌ها (آفلاین محاسبه می‌شود)، و اولویت‌های امروز که باید سریعاً پیگیری شوند.</p>
         
         <p style="margin-bottom:10px;"><strong>📁 پرونده‌ها:</strong> تمام پرونده‌های مشتریان اینجا قرار دارد. با استفاده از دکمه «فیلتر پیشرفته» یا دکمه‌های بیضی شکل بالا، می‌توانید پرونده‌ها را بر اساس مرحله، اولویت یا وضعیت کارشناسی دسته‌بندی کنید.</p>
         
         <p style="margin-bottom:10px;"><strong>➕ ثبت پرونده (دکمه وسط):</strong> برای تعریف پرونده جدید استفاده می‌شود. مشخصات مالک، قیمت‌ها و لینک آگهی‌ها را وارد کنید تا پرونده جدید در جریان قرار گیرد.</p>
         
-        <p style="margin-bottom:10px;"><strong>🔔 اعلان‌ها (Alerts):</strong> هشدارها کاملاً خودکار بر اساس ۳ حالت ظاهر می‌شوند:<br>
+        <p style="margin-bottom:10px;"><strong>🔔 اعلان‌ها :</strong> هشدارها کاملاً خودکار بر اساس ۳ حالت ظاهر می‌شوند:<br>
         ۱. پرونده روی اولویت «فوری» تنظیم شده باشد.<br>
-        ۲. تاریخ پیگیری (Follow-up) پرونده فرارسیده یا گذشته باشد.<br>
+        ۲. تاریخ پیگیری پرونده فرارسیده یا گذشته باشد.<br>
         ۳. پرونده بیش از ۳ روز بدون هیچ فعالیت/تغییر وضعیتی رها شده باشد.</p>
         
-        <p style="margin-bottom:10px;"><strong>⚙️ بیشتر (More):</strong> شامل دانلود گزارشات خلاصه (تعداد فروش) و گزارش کامل (تمام فیلدها) به صورت فایل اکسل، پشتیبان‌گیری از دیتابیس، ماشین‌حساب سریع و راهنمای نصب آفلاین است.</p>
+        <p style="margin-bottom:10px;"><strong>⚙️ بیشتر:</strong> شامل دانلود گزارشات خلاصه و کامل اکسل، پشتیبان‌گیری، ماشین‌حساب سریع و راهنمای نصب است. دکمه <strong>«بارگذاری داده نمونه»</strong> نیز ۷ پرونده تستی به سیستم اضافه می‌کند تا بتوانید نحوه کار برنامه را بدون خراب شدن داده‌های اصلی تست کنید.</p>
+        
+        <p style="margin-bottom:10px;"><strong>🗑️ حذف پرونده:</strong> برای پاک کردن کامل یک پرونده، به صفحه «جزئیات» آن رفته و دکمه قرمز رنگ انتهای صفحه را بزنید. سیستم برای اطمینان بیشتر از شما می‌خواهد کلمه «حذف» را تایپ کنید.</p>
         
         <p style="margin-bottom:10px;"><strong>👤 پروفایل (عکس بالای صفحه):</strong> امکان مشاهده آمار اختصاصی کارشناس فعلی، تغییر حساب کاربری و پاکسازی اطلاعات این دستگاه را فراهم می‌کند.</p>
       </div>
@@ -1161,6 +1163,7 @@
       try {
         const u = new URL(/^https?:\/\//i.test(t) ? t : 'https://' + t);
         if (!['http:', 'https:'].includes(u.protocol)) return '';
+        if (!u.hostname.includes('.')) return '';
         return u.href;
       } catch (_) { return ''; }
     }
@@ -1677,7 +1680,9 @@
     }
 
     function openSmartLink(url, appName) {
-      if (!url || url === '#') return;
+      if (!url || url === '#') {
+        url = appName === 'divar' ? 'https://divar.ir' : 'https://karnameh.com';
+      }
       const ua = navigator.userAgent || '';
       const isAndroid = /Android/i.test(ua);
       
@@ -2612,8 +2617,8 @@
             <input class="input" data-link-field="divarUrl" dir="ltr" placeholder="https://divar.ir/v/..." value="${esc(c.divarUrl||'')}" />
           </div>
           <div class="link-open-row">
-            <button type="button" class="link-open karname ${c.karnameUrl?'':'disabled'}" data-smart-link="${esc(c.karnameUrl||'')}" data-app-name="karname">باز کردن کارنامه</button>
-            <button type="button" class="link-open divar ${c.divarUrl?'':'disabled'}" data-smart-link="${esc(c.divarUrl||'')}" data-app-name="divar">باز کردن دیوار</button>
+            <button type="button" class="link-open karname" data-smart-link="${esc(c.karnameUrl||'')}" data-app-name="karname">باز کردن کارنامه</button>
+            <button type="button" class="link-open divar" data-smart-link="${esc(c.divarUrl||'')}" data-app-name="divar">باز کردن دیوار</button>
           </div>
         </div>
         <div class="panel">
@@ -3198,7 +3203,9 @@
       }
       if (e.target.dataset?.linkField && state.detailId) {
         const c=state.cases.find(x=>x.id===state.detailId); if(!c) return;
-        c[e.target.dataset.linkField]=sanitizeUrl(e.target.value);
+        const cleanUrl = sanitizeUrl(e.target.value);
+        c[e.target.dataset.linkField] = cleanUrl;
+        e.target.value = cleanUrl;
         await saveCase(c);
       }
       if (e.target.id==='detailPriority') { c.priority=e.target.value; await saveCase(c); }
