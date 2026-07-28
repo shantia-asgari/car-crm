@@ -2330,7 +2330,7 @@
       $('#view-'+view).classList.add('active');
       $$('.nav-btn').forEach(n=>n.classList.toggle('active',n.dataset.nav===view && !['new','detail','profile'].includes(view)));
       const t=meta[view]||'کارنامه';
-      $('#topKicker').textContent='Karname CRM';
+      $('#topKicker').textContent='Karnameh CRM';
       $('#topKicker').className='brand-en';
       $('#topTitle').textContent=t;
       updateTopUser(); updateNavBadge();
