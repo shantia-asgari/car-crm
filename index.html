@@ -3486,16 +3486,19 @@
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
         
+        // ساخت نسخه 512x512
         canvas.width = 512;
         canvas.height = 512;
         ctx.drawImage(img, 0, 0, 512, 512);
         const png512 = canvas.toDataURL('image/png');
 
+        // ساخت نسخه 192x192
         canvas.width = 192;
         canvas.height = 192;
         ctx.drawImage(img, 0, 0, 192, 192);
         const png192 = canvas.toDataURL('image/png');
 
+        // تنظیمات Manifest برای اندروید و ویندوز
         const manifest = {
           name: 'Karnameh CRM',
           short_name: 'Karnameh CRM',
@@ -3513,6 +3516,7 @@
           ]
         };
 
+        // تزریق Manifest
         let manifestLink = document.querySelector('link[rel="manifest"]');
         if (!manifestLink) {
           manifestLink = document.createElement('link');
@@ -3520,6 +3524,15 @@
           document.head.appendChild(manifestLink);
         }
         manifestLink.href = 'data:application/manifest+json;charset=utf-8,' + encodeURIComponent(JSON.stringify(manifest));
+
+        // تزریق آیکون استاندارد PNG برای مک و آیفون (سافاری)
+        let appleIcon = document.querySelector('link[rel="apple-touch-icon"]');
+        if (!appleIcon) {
+          appleIcon = document.createElement('link');
+          appleIcon.rel = 'apple-touch-icon';
+          document.head.appendChild(appleIcon);
+        }
+        appleIcon.href = png192;
       };
 
       img.src = iconSvg;
