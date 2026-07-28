@@ -2375,6 +2375,17 @@
             </div>
           </div>
         </div>
+        <div class="panel">
+          <div class="h2">محاسبه‌گر سریع کمیسیون</div>
+          <div class="sub" style="margin-bottom:8px">مبلغ معامله را وارد کنید تا سهم کارنامه و کارشناس فورا محاسبه شود</div>
+          <div class="form-group" style="margin-bottom:0">
+            <input class="input input-price input-price-final" id="quickCalcInput" inputmode="numeric" placeholder="مثلاً ۵۰۰,۰۰۰,۰۰۰" />
+          </div>
+          <div class="comm-grid" style="margin-top:10px">
+            <div class="comm-box realized karname"><span>۲٪ کارنامه</span><strong id="quickCalcKarname">—</strong></div>
+            <div class="comm-box realized"><span>۳۰٪ سهم شما</span><strong id="quickCalcExpert">—</strong></div>
+          </div>
+        </div>
         <div class="stats-grid">
           <div class="stat clickable" data-home-stat="inactive"><span>بدون فعالیت</span><strong style="color:#b45309">${fa(s.inactive)}</strong></div>
           <div class="stat clickable" data-home-stat="listing"><span>آماده آگهی</span><strong style="color:#0f766e">${fa(s.listing)}</strong></div>
@@ -3055,6 +3066,17 @@
     });
 
     document.addEventListener('input', e => {
+      if (e.target.id === 'quickCalcInput') {
+        formatPriceOnInput(e.target);
+        const val = parseNum(e.target.value) || 0;
+        const karname = Math.round(val * 0.02);
+        const expert = Math.round(karname * 0.3);
+        const elK = $('#quickCalcKarname');
+        const elE = $('#quickCalcExpert');
+        if (elK) elK.textContent = val ? fa(karname) + ' تومان' : '—';
+        if (elE) elE.textContent = val ? fa(expert) + ' تومان' : '—';
+        return;
+      }
       if (isPriceField(e.target)) {
         formatPriceOnInput(e.target);
         return;
