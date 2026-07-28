@@ -961,7 +961,17 @@
       </div>
     </div>
   </div>
-
+  <div class="modal-bg modal-center" id="callActionModal">
+    <div class="modal">
+      <div class="h2">گزینه‌های تماس</div>
+      <div class="sub" id="callActionPhone" style="margin-bottom:14px; direction:ltr; text-align:right; font-weight:900; font-size:1.1rem; color:var(--primary-dark);"></div>
+      <div class="btn-row" style="flex-direction:column;">
+        <a class="btn btn-glass-blue" id="callActionDial" href="#" style="text-align:center; text-decoration:none;">شماره‌گیری مستقیم</a>
+        <button class="btn btn-secondary" type="button" id="callActionCopy">کپی شماره</button>
+        <button class="btn btn-danger" type="button" id="callActionCancel" style="margin-top:8px;">لغو</button>
+      </div>
+    </div>
+  </div>
   <div class="modal-bg modal-center" id="deleteConfirmModal">
     <div class="modal">
       <div class="h2">تأیید حذف پرونده</div>
@@ -1844,7 +1854,7 @@
         </div>
         ${u==='inactive'?'<div class="warn">بیش از ۳ روز فعالیتی ثبت نشده</div>':''}
         <div class="actions">
-          <a class="act" href="${tl}">تماس</a>
+          <button class="act" type="button" data-call-action="${esc(c.phone)}">تماس</button>
           <button class="act" type="button" data-bale="${esc(c.phone)}">بله</button>
           <button class="act" type="button" data-report="${c.id}">گزارش</button>
           <button class="act" type="button" data-case-open="${c.id}">جزئیات</button>
@@ -2375,17 +2385,6 @@
             </div>
           </div>
         </div>
-        <div class="panel">
-          <div class="h2">محاسبه‌گر سریع کمیسیون</div>
-          <div class="sub" style="margin-bottom:8px">مبلغ معامله را وارد کنید تا سهم کارنامه و کارشناس فورا محاسبه شود</div>
-          <div class="form-group" style="margin-bottom:0">
-            <input class="input input-price input-price-final" id="quickCalcInput" inputmode="numeric" placeholder="مثلاً ۵۰۰,۰۰۰,۰۰۰" />
-          </div>
-          <div class="comm-grid" style="margin-top:10px">
-            <div class="comm-box realized karname"><span>۲٪ کارنامه</span><strong id="quickCalcKarname">—</strong></div>
-            <div class="comm-box realized"><span>۳۰٪ سهم شما</span><strong id="quickCalcExpert">—</strong></div>
-          </div>
-        </div>
         <div class="stats-grid">
           <div class="stat clickable" data-home-stat="inactive"><span>بدون فعالیت</span><strong style="color:#b45309">${fa(s.inactive)}</strong></div>
           <div class="stat clickable" data-home-stat="listing"><span>آماده آگهی</span><strong style="color:#0f766e">${fa(s.listing)}</strong></div>
@@ -2523,7 +2522,7 @@
             <div style="display:flex;align-items:center;gap:6px;"><span style="font-size:.7rem;font-weight:800;color:var(--muted)">مرحله:</span>${badge(c.stage)}</div>
           </div>
           <div class="actions">
-            <a class="act" href="${telLink(c.phone)}">تماس</a>
+            <button class="act" type="button" data-call-action="${esc(c.phone)}">تماس</button>
             <button class="act" type="button" data-bale="${esc(c.phone)}">بله</button>
             <button class="act" type="button" data-report="${c.id}">گزارش</button>
             <button class="act" type="button" data-scroll-notes>یادداشت</button>
@@ -2639,6 +2638,17 @@
       const fromOpts = monthYearOptions(state.monthReportFrom.jy, state.monthReportFrom.jm);
       const toOpts = monthYearOptions(state.monthReportTo.jy, state.monthReportTo.jm);
       $('#view-more').innerHTML=`
+        <div class="panel" style="background:linear-gradient(135deg, rgba(99,102,241,0.12), rgba(168,85,247,0.08)); border-color: rgba(99,102,241,0.2);">
+          <div class="h2" style="color:#4338ca">محاسبه‌گر سریع کمیسیون</div>
+          <div class="sub" style="margin-bottom:8px; color:#4f46e5;">مبلغ را وارد کنید تا آفلاین و سریع محاسبه شود</div>
+          <div class="form-group" style="margin-bottom:0">
+            <input class="input input-price" id="quickCalcInput" inputmode="numeric" placeholder="مثلاً ۵۰۰,۰۰۰,۰۰۰" style="background:rgba(255,255,255,0.7); border-color:rgba(99,102,241,0.3); color:#312e81;" />
+          </div>
+          <div class="comm-grid" style="margin-top:10px">
+            <div class="comm-box" style="background:rgba(255,255,255,0.5); border-color:rgba(99,102,241,0.15);"><span>۲٪ کارنامه</span><strong id="quickCalcKarname" style="color:#4338ca">—</strong></div>
+            <div class="comm-box" style="background:rgba(255,255,255,0.5); border-color:rgba(99,102,241,0.15);"><span>۳۰٪ سهم شما</span><strong id="quickCalcExpert" style="color:#4338ca">—</strong></div>
+          </div>
+        </div>
         <div class="panel">
           <div class="h2">گزارش ماهانه</div>
           <div class="sub" style="margin-bottom:8px">بازه زمانی را انتخاب کنید — فروش و پورسانت محقق‌شده</div>
@@ -2660,7 +2670,7 @@
           </div>
           <button class="btn btn-glass-blue" type="button" id="monthReportApplyBtn" style="width:100%;margin-top:10px">نمایش گزارش</button>
           <div id="monthlyReportTable" style="margin-top:12px">${monthlyReportHtml()}</div>
-          <button class="btn btn-glass-teal" type="button" id="exportMonthlyBtn" style="width:100%;margin-top:10px">دانلود گزارش ماهانه (CSV)</button>
+          <button class="btn btn-glass-teal" type="button" id="exportMonthlyBtn" style="width:100%;margin-top:10px">دانلود اکسل خلاصه عملکرد ماهانه (آمار فروش)</button>
         </div>
         <div class="panel">
           <div class="h2">پشتیبان‌گیری داده</div>
@@ -2677,7 +2687,7 @@
           <p class="pwa-hint"><strong>در کامپیوتر:</strong> در نوار آدرس مرورگر (گوشه سمت راست)، روی آیکون نصب کلیک کنید.</p>
         </div>
         <div class="btn-row" style="flex-direction:column">
-          <button class="btn btn-glass-teal" type="button" id="exportBtn">دریافت گزارش اکسل (CSV)</button>
+          <button class="btn btn-glass-teal" type="button" id="exportBtn">دانلود اکسل کل پرونده‌ها (پشتیبان‌گیری تمام فیلدها و جزئیات)</button>
           <button class="btn btn-glass-blue" type="button" id="seedBtn">بارگذاری داده نمونه</button>
         </div>
       `;
@@ -2783,6 +2793,14 @@
     }
     function closeDeleteConfirm() { $('#deleteConfirmModal').classList.remove('open'); state.deleteCaseId = null; }
 
+    function openCallAction(phone) {
+      const p = String(phone||'');
+      $('#callActionPhone').textContent = p;
+      $('#callActionDial').href = telLink(p);
+      $('#callActionModal').classList.add('open');
+    }
+    function closeCallAction() { $('#callActionModal').classList.remove('open'); }
+
     function openAddCheckModal() {
       $('#addCheckTitle').value = '';
       $('#addCheckModal').classList.add('open');
@@ -2824,6 +2842,8 @@
       if (reportBtn) { reportBtn.blur(); openReport(reportBtn.dataset.report); return true; }
       const detailBtn = e.target.closest('.actions [data-case-open]');
       if (detailBtn) { go('detail', detailBtn.dataset.caseOpen); return true; }
+      const callBtn = e.target.closest('[data-call-action]');
+      if (callBtn) { callBtn.blur(); openCallAction(callBtn.dataset.callAction); return true; }
       const notesBtn = e.target.closest('[data-scroll-notes]');
       if (notesBtn) {
         setTimeout(() => { $('#caseNotesSection')?.scrollIntoView({ behavior:'smooth', block:'start' }); $('#noteInput')?.focus(); }, 100);
@@ -2845,6 +2865,13 @@
         return;
       }
       if (e.target.closest('#closeReportModal')) { closeReport(); return; }
+      if (e.target.closest('#callActionCancel') || e.target.closest('#callActionDial')) { closeCallAction(); return; }
+      if (e.target.closest('#callActionCopy')) {
+        const p = $('#callActionPhone').textContent;
+        if (navigator.clipboard) navigator.clipboard.writeText(p);
+        closeCallAction();
+        return;
+      }
       if (e.target.closest('[data-home-stat]')) {
         openHomeStatModal(e.target.closest('[data-home-stat]').dataset.homeStat);
         return;
@@ -3171,7 +3198,7 @@
       const el=e.target.closest('.card[data-case-open]'); if(!el) return;
       const d=e.changedTouches[0].screenX-tx0, c=state.cases.find(x=>x.id===el.dataset.caseOpen);
       if(!c) return;
-      if(d>70) location.href=telLink(c.phone);
+      if(d>70) openCallAction(c.phone);
       if(d<-70) openReport(c.id);
     },{passive:true});
 
